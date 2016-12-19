@@ -1,0 +1,8 @@
+Rover Controller
+xLeft	Left joystick  X	3	SLIDER	x	0	512.0	0.1
+yLeft	Left  Joystick y	3	SLIDER	y	0	512.0	0.1
+xRight	Right joystick x	3	SLIDER	z	0	512.0	0.1
+yRight	Right joysticck y	3	SLIDER	rz	0	512.0	0.1
+rotateR	Rotate right	3	SLIDER	ry	0	100.0	0.0
+rotateL	Rotate  left	3	SLIDER	rx	0	100.0	0.0
+xBut	X Button for mode	1	BUTTON	B	0	0.0	0.0
