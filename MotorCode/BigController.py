@@ -42,6 +42,12 @@ class BigController():
 			y = joystick.get_axis(1)*512.0+512	
 			throttle = joystick.get_axis(3)*100.0+100
 
+			#for i in range(1,8):
+			#	if throttle <= 25*i:
+			#		top = 65535/8 * i
+			#		break
+			top = self.mapVal(throttle,0,200,0,65535)
+
 			if(x>1023): 
 				x = 1023
 			if(y>1023): 
@@ -58,26 +64,26 @@ class BigController():
 				leftf = leftr = rightf = rightr = 0
 			elif(x<=512+centerBuff and x>=512-centerBuff):
 				if(y>=512+centerBuff):
-					rightf = self.mapVal(y,512+centerBuff,1023,0,255)
+					rightf = self.mapVal(y,512+centerBuff,1023,0,top)
 					rightr = 0
-					leftr = self.mapVal(y,512+centerBuff,1023,0,255)
+					leftr = self.mapVal(y,512+centerBuff,1023,0,top)
 					leftf = 0
 				elif(y<=512-centerBuff):
-					rightr = self.mapVal(y,0,512-centerBuff,255,0)
+					rightr = self.mapVal(y,0,512-centerBuff,top,0)
 					rightf = 0
-					leftf = self.mapVal(y,0,512-centerBuff,255,0)
+					leftf = self.mapVal(y,0,512-centerBuff,top,0)
 					leftr = 0
 			elif(y<=512+centerBuff and y>=512-centerBuff):
 				if(x>=512+centerBuff):
-					leftf = self.mapVal(x,512+centerBuff,1023,0,255)
+					leftf = self.mapVal(x,512+centerBuff,1023,0,top)
 					leftr = 0
-					rightf = self.mapVal(x,512+centerBuff,1023,0,255)
+					rightf = self.mapVal(x,512+centerBuff,1023,0,top)
 					rightr = 0
 				elif(x<512-centerBuff):
-					leftr = self.mapVal(x,0,512-centerBuff,255,0)
+					leftr = self.mapVal(x,0,512-centerBuff,top,0)
 					leftf = 0
 					rightf = 0
-					rightr = self.mapVal(x,0,512-centerBuff,255,0)
+					rightr = self.mapVal(x,0,512-centerBuff,top,0)
 			else:
 				refx = refy = 0
 				if(y<512):
@@ -87,33 +93,33 @@ class BigController():
 
 						if(x<refx):
 							leftr = 0
-							leftf = self.mapVal(y,0,511,255,0)
+							leftf = self.mapVal(y,0,511,top,0)
 							rightf = 0
-							rightr = self.mapVal(x,512,refx,255,0)
+							rightr = self.mapVal(x,512,refx,top,0)
 
 						else:
 							refx = x
 							refy = 1023 - refx
 							leftr = 0
-							leftf = self.mapVal(x,512,1023,0,255)
+							leftf = self.mapVal(x,512,1023,0,top)
 							rightr = 0
-							rightf = self.mapVal(y,refy,511,0,255)
+							rightf = self.mapVal(y,refy,511,0,top)
 
 					else:
 						refy = refx = y
 
 						if(x>refx):
 							rightf = 0
-							rightr = self.mapVal(y,0,511,255,0)
+							rightr = self.mapVal(y,0,511,top,0)
 							leftr = 0
-							leftf = self.mapVal(x,refx,511,0,255)
+							leftf = self.mapVal(x,refx,511,0,top)
 
 						else:
 							refx = refy = x
 							rightf = 0
-							rightr = self.mapVal(x,0,511,255,0)
+							rightr = self.mapVal(x,0,511,top,0)
 							leftf = 0
-							leftr = self.mapVal(y,refy,511,0,255)
+							leftr = self.mapVal(y,refy,511,0,top)
 
 				else:
 					if(x<512):
@@ -123,8 +129,8 @@ class BigController():
 						if(x>refx):
 							print "!!@@x : "+str(x)+" y : "+str(y)
 							leftf = 0
-							leftr = self.mapVal(y,512,1023,0,255)
-							rightf = self.mapVal(x,refx,511,0,255)
+							leftr = self.mapVal(y,512,1023,0,top)
+							rightf = self.mapVal(x,refx,511,0,top)
 							rightr = 0
 							print("leftf : "+str(leftf)+" rightf : "+str(rightf))
 							print("leftr : "+str(leftr)+" rightr : "+str(rightr))
@@ -133,25 +139,25 @@ class BigController():
 							refx = x
 							refy = 1023 - refx
 							leftf = 0
-							leftr = self.mapVal(y,512,1023,0,255)
+							leftr = self.mapVal(y,512,1023,0,top)
 							rightr = 0
-							rightf = self.mapVal(x,refx,511,0,255)
+							rightf = self.mapVal(x,refx,511,0,top)
 
 					else:
 						refx = refy = y
 						if(x>refx):
 							refx = refy = x
 							rightr = 0
-							rightf = self.mapVal(x,512,1023,0,255)
+							rightf = self.mapVal(x,512,1023,0,top)
 							leftr = 0
-							leftf = self.mapVal(y,512,refy,255,0)
+							leftf = self.mapVal(y,512,refy,top,0)
 
 						else:
 							refx = refy = y
 							rightr = 0
-							rightf = self.mapVal(y,512,1023,0,255)
+							rightf = self.mapVal(y,512,1023,0,top)
 							leftf = 0
-							leftr = self.mapVal(x,512,refx,255,0)
+							leftr = self.mapVal(x,512,refx,top,0)
 
 
 			prevx = x
