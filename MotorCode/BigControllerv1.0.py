@@ -1,9 +1,11 @@
 import pygame
 import time
+import serial
 
 class BigController():
 	def __init__(self):
 		global joystick
+		global ser
 		pygame.init()
 		pygame.joystick.init()
 		if pygame.joystick.get_init() == 1:
@@ -12,6 +14,8 @@ class BigController():
 		print "Joystick's name : "+joystickinit.get_name() + " id : "+str(joystickinit.get_id())
 		joystickinit.init()
 		joystick = joystickinit
+		#ser = serial.Serial('/dev/ttyUSB0',9800,timeout = 1)
+		#print(ser.name+" is initialized.")
 		self.main()
 
 	def mapVal(self,a,b,c,d,e):
@@ -20,12 +24,15 @@ class BigController():
 	def main(self):
 		clock = pygame.time.Clock()
 		global joystick 
+		global ser
 		print joystick.get_name()
 
 		leftr = leftf = rightr = rightf = x = y = pressed = throttle = rot = 0
 		buffVal = 50
 		centerBuff = 10
 		prevx = prevy = 512
+		prevRotVal = 0
+		bufferRotVal = 20
 
 		while(1):
 			for event in pygame.event.get():
@@ -41,11 +48,17 @@ class BigController():
 			x = joystick.get_axis(0)*512.0+512
 			y = joystick.get_axis(1)*512.0+512	
 			throttle = joystick.get_axis(3)*100.0+100
+			rotVal = joystick.get_axis(2)*100.0;
+			
+			if rotVal - prevRotVal >=bufferRotVal:
+				rotVal = prevRotVal + bufferRotVal
+			elif rotVal - prevRotVal <=-bufferRotVal:
+				rotVal = prevRotVal - bufferRotVal
+			elif rotVal - prevRotVal <=-bufferRotVal:
+				rotVal = prevRotVal - bufferRotVal
+			elif rotVal - prevRotVal >= bufferRotVal:
+				rotVal = prevRotVal + bufferRotVal
 
-			#for i in range(1,8):
-			#	if throttle <= 25*i:
-			#		top = 65535/8 * i
-			#		break
 			top = self.mapVal(throttle,0,200,0,65535)
 
 			if(x>1023): 
@@ -90,8 +103,7 @@ class BigController():
 					if(x>512):
 						refy = y
 						refx = 1023 - refy
-
-						if(x<refx):
+						if(x<=refx):
 							leftr = 0
 							leftf = self.mapVal(y,0,511,top,0)
 							rightf = 0
@@ -107,8 +119,7 @@ class BigController():
 
 					else:
 						refy = refx = y
-
-						if(x>refx):
+						if(x>=refx):
 							rightf = 0
 							rightr = self.mapVal(y,0,511,top,0)
 							leftr = 0
@@ -125,8 +136,7 @@ class BigController():
 					if(x<512):
 						refy = y
 						refx = 1023 - refy
-
-						if(x>refx):
+						if(x>=refx):
 							rightr = 0
 							rightf = self.mapVal(y,512,1023,0,top)
 							leftr = self.mapVal(x,refx,511,0,top)
@@ -149,22 +159,50 @@ class BigController():
 						#	leftr = 0
 						#	leftf = self.mapVal(y,512,refy,top,0)
 
-						if(x<refx):
+						if(x<=refx):
 							refx = refy = y
 							leftf = 0
 							leftr = self.mapVal(y,512,1023,0,top)
 							rightr = 0
 							rightf = self.mapVal(x,512,refx,top,0)
 
-
 			prevx = x
 			prevy = y
+
+			if rotVal!=0 and x<=512+centerBuff and x>=512-centerBuff and y<=512+centerBuff and y>=512-centerBuff:
+				
+				if(rotVal<-centerBuff):
+					leftf = 0
+					leftr = self.mapVal(rotVal,0,-100,0,top)
+					rightf = 0
+					rightr = self.mapVal(rotVal,0,-100,0,top)
+				elif(rotVal>centerBuff):
+					leftr = 0
+					leftf = self.mapVal(rotVal,0,100,0,top)
+					rightr = 0
+					rightf = self.mapVal(rotVal,0,100,0,top)
+				prevRotVal = rotVal
+
+			if rotVal == 0:
+				prevRotVal = 0
+
+			leftf = int(leftf)
+			leftr = int(leftr)
+			rightf = int(rightf)
+			rightr = int(rightr)
+			
 			print ("x : "+str(x)+" y : "+str(y))			
 			print("leftf : "+str(leftf)+" rightf : "+str(rightf))
 			print("leftr : "+str(leftr)+" rightr : "+str(rightr))
 			print("Throttle : "+str(throttle))
+			print("Rotation Value: "+str(rotVal))
 			clock.tick(20)
-				
+			#ser.write('lf'+str(leftf)+'\n')
+			#ser.write('lr'+str(leftr)+'\n')
+			#ser.write('rf'+str(rightf)+'\n')
+			#ser.write('rr'+str(rightr)+'\n')
+			if pressed == 2:
+				break
 				
 
 
