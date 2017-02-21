@@ -1,0 +1,258 @@
+
+TWItest1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001f0  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  000001f0  00000284  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000002  00800060  00800060  00000284  2**0
+                  ALLOC
+  3 .comment      00000011  00000000  00000000  00000284  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000298  2**2
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	20 e0       	ldi	r18, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a2 36       	cpi	r26, 0x62	; 98
+  6c:	b2 07       	cpc	r27, r18
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 db 00 	call	0x1b6	; 0x1b6 <main>
+  74:	0c 94 f6 00 	jmp	0x1ec	; 0x1ec <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <initMaster>:
+  7c:	c1 9a       	sbi	0x18, 1	; 24
+  7e:	82 e0       	ldi	r24, 0x02	; 2
+  80:	80 b9       	out	0x00, r24	; 0
+  82:	88 ef       	ldi	r24, 0xF8	; 248
+  84:	82 b9       	out	0x02, r24	; 2
+  86:	08 95       	ret
+
+00000088 <startMaster>:
+  88:	86 b7       	in	r24, 0x36	; 54
+  8a:	84 6a       	ori	r24, 0xA4	; 164
+  8c:	86 bf       	out	0x36, r24	; 54
+  8e:	06 b6       	in	r0, 0x36	; 54
+  90:	07 fe       	sbrs	r0, 7
+  92:	fd cf       	rjmp	.-6      	; 0x8e <startMaster+0x6>
+  94:	81 b1       	in	r24, 0x01	; 1
+  96:	88 7f       	andi	r24, 0xF8	; 248
+  98:	88 30       	cpi	r24, 0x08	; 8
+  9a:	31 f0       	breq	.+12     	; 0xa8 <startMaster+0x20>
+  9c:	81 e0       	ldi	r24, 0x01	; 1
+  9e:	90 e0       	ldi	r25, 0x00	; 0
+  a0:	90 93 61 00 	sts	0x0061, r25
+  a4:	80 93 60 00 	sts	0x0060, r24
+  a8:	08 95       	ret
+
+000000aa <addressMaster>:
+  aa:	86 ed       	ldi	r24, 0xD6	; 214
+  ac:	83 b9       	out	0x03, r24	; 3
+  ae:	86 b7       	in	r24, 0x36	; 54
+  b0:	84 68       	ori	r24, 0x84	; 132
+  b2:	86 bf       	out	0x36, r24	; 54
+  b4:	06 b6       	in	r0, 0x36	; 54
+  b6:	07 fe       	sbrs	r0, 7
+  b8:	fd cf       	rjmp	.-6      	; 0xb4 <addressMaster+0xa>
+  ba:	81 b1       	in	r24, 0x01	; 1
+  bc:	88 7f       	andi	r24, 0xF8	; 248
+  be:	88 31       	cpi	r24, 0x18	; 24
+  c0:	a1 f4       	brne	.+40     	; 0xea <addressMaster+0x40>
+  c2:	81 e0       	ldi	r24, 0x01	; 1
+  c4:	90 e0       	ldi	r25, 0x00	; 0
+  c6:	90 93 61 00 	sts	0x0061, r25
+  ca:	80 93 60 00 	sts	0x0060, r24
+  ce:	c0 9a       	sbi	0x18, 0	; 24
+  d0:	87 ea       	ldi	r24, 0xA7	; 167
+  d2:	91 e6       	ldi	r25, 0x61	; 97
+  d4:	01 97       	sbiw	r24, 0x01	; 1
+  d6:	f1 f7       	brne	.-4      	; 0xd4 <addressMaster+0x2a>
+  d8:	00 c0       	rjmp	.+0      	; 0xda <addressMaster+0x30>
+  da:	00 00       	nop
+  dc:	c0 98       	cbi	0x18, 0	; 24
+  de:	87 ea       	ldi	r24, 0xA7	; 167
+  e0:	91 e6       	ldi	r25, 0x61	; 97
+  e2:	01 97       	sbiw	r24, 0x01	; 1
+  e4:	f1 f7       	brne	.-4      	; 0xe2 <addressMaster+0x38>
+  e6:	00 c0       	rjmp	.+0      	; 0xe8 <addressMaster+0x3e>
+  e8:	00 00       	nop
+  ea:	08 95       	ret
+
+000000ec <dataMaster>:
+  ec:	8f ef       	ldi	r24, 0xFF	; 255
+  ee:	83 b9       	out	0x03, r24	; 3
+  f0:	86 b7       	in	r24, 0x36	; 54
+  f2:	8f 7d       	andi	r24, 0xDF	; 223
+  f4:	86 bf       	out	0x36, r24	; 54
+  f6:	86 b7       	in	r24, 0x36	; 54
+  f8:	84 68       	ori	r24, 0x84	; 132
+  fa:	86 bf       	out	0x36, r24	; 54
+  fc:	06 b6       	in	r0, 0x36	; 54
+  fe:	07 fe       	sbrs	r0, 7
+ 100:	fd cf       	rjmp	.-6      	; 0xfc <dataMaster+0x10>
+ 102:	81 b1       	in	r24, 0x01	; 1
+ 104:	88 7f       	andi	r24, 0xF8	; 248
+ 106:	88 32       	cpi	r24, 0x28	; 40
+ 108:	31 f0       	breq	.+12     	; 0x116 <dataMaster+0x2a>
+ 10a:	81 e0       	ldi	r24, 0x01	; 1
+ 10c:	90 e0       	ldi	r25, 0x00	; 0
+ 10e:	90 93 61 00 	sts	0x0061, r25
+ 112:	80 93 60 00 	sts	0x0060, r24
+ 116:	08 95       	ret
+
+00000118 <stopMaster>:
+ 118:	86 b7       	in	r24, 0x36	; 54
+ 11a:	84 69       	ori	r24, 0x94	; 148
+ 11c:	86 bf       	out	0x36, r24	; 54
+ 11e:	08 95       	ret
+
+00000120 <initSlave>:
+ 120:	8e e0       	ldi	r24, 0x0E	; 14
+ 122:	82 b9       	out	0x02, r24	; 2
+ 124:	08 95       	ret
+
+00000126 <addressSlave>:
+ 126:	86 b7       	in	r24, 0x36	; 54
+ 128:	84 6c       	ori	r24, 0xC4	; 196
+ 12a:	86 bf       	out	0x36, r24	; 54
+ 12c:	06 b6       	in	r0, 0x36	; 54
+ 12e:	07 fe       	sbrs	r0, 7
+ 130:	fd cf       	rjmp	.-6      	; 0x12c <addressSlave+0x6>
+ 132:	81 b1       	in	r24, 0x01	; 1
+ 134:	88 7f       	andi	r24, 0xF8	; 248
+ 136:	80 36       	cpi	r24, 0x60	; 96
+ 138:	31 f0       	breq	.+12     	; 0x146 <addressSlave+0x20>
+ 13a:	81 e0       	ldi	r24, 0x01	; 1
+ 13c:	90 e0       	ldi	r25, 0x00	; 0
+ 13e:	90 93 61 00 	sts	0x0061, r25
+ 142:	80 93 60 00 	sts	0x0060, r24
+ 146:	08 95       	ret
+
+00000148 <dataSlave>:
+ 148:	86 b7       	in	r24, 0x36	; 54
+ 14a:	84 6c       	ori	r24, 0xC4	; 196
+ 14c:	86 bf       	out	0x36, r24	; 54
+ 14e:	06 b6       	in	r0, 0x36	; 54
+ 150:	07 fe       	sbrs	r0, 7
+ 152:	fd cf       	rjmp	.-6      	; 0x14e <dataSlave+0x6>
+ 154:	81 b1       	in	r24, 0x01	; 1
+ 156:	88 7f       	andi	r24, 0xF8	; 248
+ 158:	80 38       	cpi	r24, 0x80	; 128
+ 15a:	31 f0       	breq	.+12     	; 0x168 <dataSlave+0x20>
+ 15c:	81 e0       	ldi	r24, 0x01	; 1
+ 15e:	90 e0       	ldi	r25, 0x00	; 0
+ 160:	90 93 61 00 	sts	0x0061, r25
+ 164:	80 93 60 00 	sts	0x0060, r24
+ 168:	83 b1       	in	r24, 0x03	; 3
+ 16a:	8f 3f       	cpi	r24, 0xFF	; 255
+ 16c:	21 f4       	brne	.+8      	; 0x176 <dataSlave+0x2e>
+ 16e:	98 b3       	in	r25, 0x18	; 24
+ 170:	81 e0       	ldi	r24, 0x01	; 1
+ 172:	89 27       	eor	r24, r25
+ 174:	88 bb       	out	0x18, r24	; 24
+ 176:	08 95       	ret
+
+00000178 <stopSlave>:
+ 178:	86 b7       	in	r24, 0x36	; 54
+ 17a:	84 6c       	ori	r24, 0xC4	; 196
+ 17c:	86 bf       	out	0x36, r24	; 54
+ 17e:	06 b6       	in	r0, 0x36	; 54
+ 180:	07 fe       	sbrs	r0, 7
+ 182:	fd cf       	rjmp	.-6      	; 0x17e <stopSlave+0x6>
+ 184:	81 b1       	in	r24, 0x01	; 1
+ 186:	88 7f       	andi	r24, 0xF8	; 248
+ 188:	80 3a       	cpi	r24, 0xA0	; 160
+ 18a:	31 f0       	breq	.+12     	; 0x198 <stopSlave+0x20>
+ 18c:	81 e0       	ldi	r24, 0x01	; 1
+ 18e:	90 e0       	ldi	r25, 0x00	; 0
+ 190:	90 93 61 00 	sts	0x0061, r25
+ 194:	80 93 60 00 	sts	0x0060, r24
+ 198:	80 91 60 00 	lds	r24, 0x0060
+ 19c:	90 91 61 00 	lds	r25, 0x0061
+ 1a0:	89 2b       	or	r24, r25
+ 1a2:	41 f4       	brne	.+16     	; 0x1b4 <stopSlave+0x3c>
+ 1a4:	c2 9a       	sbi	0x18, 2	; 24
+ 1a6:	87 ea       	ldi	r24, 0xA7	; 167
+ 1a8:	91 e6       	ldi	r25, 0x61	; 97
+ 1aa:	01 97       	sbiw	r24, 0x01	; 1
+ 1ac:	f1 f7       	brne	.-4      	; 0x1aa <stopSlave+0x32>
+ 1ae:	00 c0       	rjmp	.+0      	; 0x1b0 <stopSlave+0x38>
+ 1b0:	00 00       	nop
+ 1b2:	c2 98       	cbi	0x18, 2	; 24
+ 1b4:	08 95       	ret
+
+000001b6 <main>:
+ 1b6:	87 b3       	in	r24, 0x17	; 23
+ 1b8:	85 60       	ori	r24, 0x05	; 5
+ 1ba:	87 bb       	out	0x17, r24	; 23
+ 1bc:	0e 94 3e 00 	call	0x7c	; 0x7c <initMaster>
+ 1c0:	86 b7       	in	r24, 0x36	; 54
+ 1c2:	84 60       	ori	r24, 0x04	; 4
+ 1c4:	86 bf       	out	0x36, r24	; 54
+ 1c6:	b1 99       	sbic	0x16, 1	; 22
+ 1c8:	fe cf       	rjmp	.-4      	; 0x1c6 <main+0x10>
+ 1ca:	87 ea       	ldi	r24, 0xA7	; 167
+ 1cc:	91 e6       	ldi	r25, 0x61	; 97
+ 1ce:	01 97       	sbiw	r24, 0x01	; 1
+ 1d0:	f1 f7       	brne	.-4      	; 0x1ce <main+0x18>
+ 1d2:	00 c0       	rjmp	.+0      	; 0x1d4 <main+0x1e>
+ 1d4:	00 00       	nop
+ 1d6:	b1 99       	sbic	0x16, 1	; 22
+ 1d8:	f6 cf       	rjmp	.-20     	; 0x1c6 <main+0x10>
+ 1da:	0e 94 44 00 	call	0x88	; 0x88 <startMaster>
+ 1de:	0e 94 55 00 	call	0xaa	; 0xaa <addressMaster>
+ 1e2:	0e 94 76 00 	call	0xec	; 0xec <dataMaster>
+ 1e6:	0e 94 8c 00 	call	0x118	; 0x118 <stopMaster>
+ 1ea:	ed cf       	rjmp	.-38     	; 0x1c6 <main+0x10>
+
+000001ec <_exit>:
+ 1ec:	f8 94       	cli
+
+000001ee <__stop_program>:
+ 1ee:	ff cf       	rjmp	.-2      	; 0x1ee <__stop_program>

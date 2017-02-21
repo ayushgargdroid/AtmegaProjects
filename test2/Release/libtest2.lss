@@ -1,0 +1,14 @@
+In archive libtest2.a:
+
+main.o:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000000  00000000  00000000  00000034  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00000000  00000000  00000034  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000000  00000000  00000000  00000034  2**0
+                  ALLOC
+  3 .comment      00000012  00000000  00000000  00000034  2**0
+                  CONTENTS, READONLY

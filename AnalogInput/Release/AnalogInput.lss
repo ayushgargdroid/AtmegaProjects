@@ -1,0 +1,122 @@
+
+AnalogInput.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000e6  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  000000e6  0000017a  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000002  00800060  00800060  0000017a  2**0
+                  ALLOC
+  3 .comment      00000011  00000000  00000000  0000017a  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000018c  2**2
+                  CONTENTS, READONLY
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 45 00 	jmp	0x8a	; 0x8a <__vector_16>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	20 e0       	ldi	r18, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	a2 36       	cpi	r26, 0x62	; 98
+  6c:	b2 07       	cpc	r27, r18
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 3e 00 	call	0x7c	; 0x7c <main>
+  74:	0c 94 71 00 	jmp	0xe2	; 0xe2 <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <main>:
+  7c:	78 94       	sei
+  7e:	b8 9a       	sbi	0x17, 0	; 23
+  80:	3e 9a       	sbi	0x07, 6	; 7
+  82:	86 b1       	in	r24, 0x06	; 6
+  84:	8c 6c       	ori	r24, 0xCC	; 204
+  86:	86 b9       	out	0x06, r24	; 6
+  88:	ff cf       	rjmp	.-2      	; 0x88 <main+0xc>
+
+0000008a <__vector_16>:
+  8a:	1f 92       	push	r1
+  8c:	0f 92       	push	r0
+  8e:	0f b6       	in	r0, 0x3f	; 63
+  90:	0f 92       	push	r0
+  92:	11 24       	eor	r1, r1
+  94:	2f 93       	push	r18
+  96:	8f 93       	push	r24
+  98:	9f 93       	push	r25
+  9a:	84 b1       	in	r24, 0x04	; 4
+  9c:	25 b1       	in	r18, 0x05	; 5
+  9e:	90 e0       	ldi	r25, 0x00	; 0
+  a0:	92 2b       	or	r25, r18
+  a2:	81 15       	cp	r24, r1
+  a4:	92 40       	sbci	r25, 0x02	; 2
+  a6:	a0 f4       	brcc	.+40     	; 0xd0 <__vector_16+0x46>
+  a8:	80 91 60 00 	lds	r24, 0x0060
+  ac:	90 91 61 00 	lds	r25, 0x0061
+  b0:	01 96       	adiw	r24, 0x01	; 1
+  b2:	90 93 61 00 	sts	0x0061, r25
+  b6:	80 93 60 00 	sts	0x0060, r24
+  ba:	89 3e       	cpi	r24, 0xE9	; 233
+  bc:	93 40       	sbci	r25, 0x03	; 3
+  be:	44 f0       	brlt	.+16     	; 0xd0 <__vector_16+0x46>
+  c0:	98 b3       	in	r25, 0x18	; 24
+  c2:	81 e0       	ldi	r24, 0x01	; 1
+  c4:	89 27       	eor	r24, r25
+  c6:	88 bb       	out	0x18, r24	; 24
+  c8:	10 92 61 00 	sts	0x0061, r1
+  cc:	10 92 60 00 	sts	0x0060, r1
+  d0:	36 9a       	sbi	0x06, 6	; 6
+  d2:	9f 91       	pop	r25
+  d4:	8f 91       	pop	r24
+  d6:	2f 91       	pop	r18
+  d8:	0f 90       	pop	r0
+  da:	0f be       	out	0x3f, r0	; 63
+  dc:	0f 90       	pop	r0
+  de:	1f 90       	pop	r1
+  e0:	18 95       	reti
+
+000000e2 <_exit>:
+  e2:	f8 94       	cli
+
+000000e4 <__stop_program>:
+  e4:	ff cf       	rjmp	.-2      	; 0xe4 <__stop_program>
