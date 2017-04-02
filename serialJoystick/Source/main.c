@@ -15,7 +15,7 @@ int powCust(int x,int y)
 void main(void)
 {
 	sei();
-	DDRB |= 1<<PINB0 | 1<<PINB1 | 1<<PINB2;
+	DDRB |= 1<<PINB0 | 1<<PINB1 | 1<<PINB2 | 1<<PORTB3;
 	DDRD |= 1<<PORTD4 | 1<<PORTD5 | 1<<PORTD7;
 	DDRB |= 1<<PORTB3;
 
@@ -64,66 +64,40 @@ ISR(USART_RXC_vect)
 		in = in + (t*powCust(10,count));
 		count--;
 		while (! (UCSRA & (1 << UDRE)) );
-					UDR = (unsigned char)ded;
+				UDR = (unsigned char)ded;
 	}
 	else
-	{
-		count = 3;
-		int t1 = in/1000;
-		switch(t1)
-		{
-		case 0:
-			leftf = in%1000;
-			break;
-		case 1:
-			leftr = in%1000;
-			break;
-		case 2:
-			rightf = in%1000;
-			break;
-		case 3:
-			rightr = in%1000;
-			break;
-		}
-		in = 0;
-	}
-	/*if(rec<='9' && rec>='0')
 	{
 		if(count==0)
 		{
-			ded=rec;
-			ted=rec;
+			in -= 100;
+			int t1 = in/1000;
+			switch(t1)
+			{
+			case 'a':
+				leftf = in%1000;
+				PORTB &= ~(1<<PINB4);
+				OCR0 = leftf;
+				break;
+			case 'b':
+				leftr = in%1000;
+				PORTB |= (1<<PINB4);
+				OCRO = leftr;
+				break;
+			case 'c':
+				rightf = in%1000;
+				PORTD &= ~(1<<PIND4);
+				OCR1B = rightf;
+				break;
+			case 'd':
+				rightr = in%1000;
+				PORTD |= 1<<PIND4;
+				OCR1B = rightl;
+				break;
+			}
 		}
-		int t = (rec - '0');
-		in = in + (t*pow(10,count--));
-		//PORTB ^= 1<<PINB0;
-		//_delay_ms(100);
-	}
-	else
-	{
-		ded=ted;
-	}
-	else
-	{
-		PORTB |= 1<<PINB2;
-		int t = rec/1000;
-		switch(t)
-		{
-		case 0:
-			leftf = t%1000;
-			break;
-		case 1:
-			leftr = t%1000;
-			break;
-		case 2:
-			rightf = t%1000;
-			break;
-		case 3:
-			rightr = t%1000;
-			break;
-		}
-		if(in==1255)PORTB |= 1<<PINB0;
 		count = 3;
 		in = 0;
-	}*/
+	}
+	
 }

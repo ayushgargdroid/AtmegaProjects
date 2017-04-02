@@ -24,12 +24,12 @@ class BigController():
 	def main(self):
 		clock = pygame.time.Clock()
 		global joystick 
-		global ser
+		#global ser
 		print joystick.get_name()
 
 		leftr = leftf = rightr = rightf = x = y = pressed = throttle = rot = 0
 		buffVal = 50
-		centerBuff = 530
+		centerBuff = 50
 		prevx = prevy = 512
 		prevRotVal = 0
 		bufferRotVal = 20
@@ -50,14 +50,14 @@ class BigController():
 			throttle = joystick.get_axis(3)*100.0+100
 			rotVal = joystick.get_axis(2)*100.0;
 			
-			if rotVal - prevRotVal >=bufferRotVal:
+			'''if rotVal - prevRotVal >=bufferRotVal:
 				rotVal = prevRotVal + bufferRotVal
 			elif rotVal - prevRotVal <=-bufferRotVal:
 				rotVal = prevRotVal - bufferRotVal
 			elif rotVal - prevRotVal <=-bufferRotVal:
 				rotVal = prevRotVal - bufferRotVal
 			elif rotVal - prevRotVal >= bufferRotVal:
-				rotVal = prevRotVal + bufferRotVal
+				rotVal = prevRotVal + bufferRotVal'''
 
 			top = self.mapVal(throttle,0,200,0,255)
 
@@ -65,14 +65,14 @@ class BigController():
 				x = 1023
 			if(y>1023): 
 				y = 1023
-			if(x-prevx>buffVal):
+			'''if(x-prevx>buffVal):
 				x = prevx + buffVal
 			elif(x-prevx<-buffVal):
 				x = prevx - buffVal
 			if(y-prevy>buffVal):
 				y = prevy + buffVal
 			elif(y-prevy<-buffVal):
-				y = prevy - buffVal
+				y = prevy - buffVal'''
 			if(x<=512+centerBuff and x>=512-centerBuff and y<=512+centerBuff and y>=512-centerBuff):
 				leftf = leftr = rightf = rightr = 0
 			elif(x<=512+centerBuff and x>=512-centerBuff):
@@ -169,7 +169,7 @@ class BigController():
 			prevx = x
 			prevy = y
 
-			if rotVal!=0 and x<=512+centerBuff and x>=512-centerBuff and y<=512+centerBuff and y>=512-centerBuff:
+			if (rotVal<=-30 or rotVal>=30) and x<=512+centerBuff and x>=512-centerBuff and y<=512+centerBuff and y>=512-centerBuff:
 				
 				if(rotVal<-centerBuff):
 					leftf = 0
@@ -197,10 +197,39 @@ class BigController():
 			print("Throttle : "+str(throttle))
 			print("Rotation Value: "+str(rotVal))
 			clock.tick(20)
-			ser.write('0'+str(leftf)+'$')
-			ser.write('1'+str(leftr)+'$')
-			ser.write('2'+str(rightf)+'$')
-			ser.write('3'+str(rightr)+'$')
+
+			fin = '$'
+
+			if leftf == 0:
+				#print('b'+str(leftr+100))
+				fin = fin + 'b' + str(leftr+100)
+				#temp1 = leftr
+			else:
+				#print('a'+str(leftf+100))
+				fin = fin + 'a' + str(leftf+100)
+				#temp1 = leftf
+
+			if rightf == 0:
+				#print('d'+str(rightr+100))
+				fin = fin + 'd' + str(rightr+100)
+				#temp2 = rightr
+			else:
+				#print('c'+str(rightf+100))
+				fin = fin + 'c' + str(rightf+100)
+				#temp2 = rightf
+			
+
+			#fin = fin + str(temp1+100) + str(temp2+100)	
+			fin += '!#'
+			ser.write(fin)
+			print fin
+			fin = ''
+
+
+			'''ser.write('a'+str(leftf))
+			ser.write('b'+str(leftr))
+			ser.write('c'+str(rightf))
+			ser.write('d'+str(rightr))'''
 			#print('aafaduf gakdugfikasd'+str(ser.read()))
 			if pressed == 2:
 				break
