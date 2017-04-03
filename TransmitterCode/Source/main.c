@@ -15,14 +15,14 @@
  * OCR2 = rightr;
  */
 
-int x = 0, y = 0,done=0,tx = 0,ty = 0;
+int x = 127, y = 127,done=0,tx = 0,ty = 0;
 void main(void)
 {
 	sei();
 	int t = -1;
 	//DDR setup
 	DDRD |= 1<<PORTD4 | 1<<PORTD5 | 1<<PORTD7;
-	DDRB |= 1<<PORTB3 | 1<<PORTB0 | 1<<PORTB1;
+	DDRB |= 1<<PORTB3 | 1<<PORTB0 | 1<<PORTB1 | 1<<PORTB2;
 
 	//ADC SETUP
 	ADMUX = 0x40;
@@ -49,6 +49,7 @@ void main(void)
 	//8BIT TIMER2
 	//TCCR2 |= 1<<WGM21 | 1<<WGM20 | 1<<COM21 | 1<<CS20;
 	//OCR2
+	int i = 0;
 
 	while(1)
 	{
@@ -64,38 +65,47 @@ void main(void)
 		_delay_ms(100);
 		UDR = '#';
 		_delay_ms(100);*/
-		while (! (UCSRA & (1 << UDRE)) );
-		switch(t)
+		if(i>5000)
 		{
-		case -1:
-			UDR = '$';
-			_delay_ms(10);
-			break;
-		case 0:
-			UDR = 'a';
-			_delay_ms(10);
-			break;
-		case 1:
-			UDR = (x & 0xFF);
-			_delay_ms(10);
-			break;
-		case 2:
-			UDR = 'b';
-			_delay_ms(10);
-			break;
-		case 3:
-			UDR = (y & 0xFF);
-			_delay_ms(10);
-			break;
-		case 4:
-			UDR = '#';
-			_delay_ms(10);
-			t = -2;
-			break;
+			while (! (UCSRA & (1 << UDRE)) );
+			PORTB |= 1<<PINB2;
+			switch(t)
+			{
+			case -1:
+				UDR = '$';
+				_delay_ms(10);
+				break;
+			case 0:
+				UDR = 'a';
+				_delay_ms(10);
+				break;
+			case 1:
+				UDR = (x & 0xFF);
+				_delay_ms(10);
+				break;
+			case 2:
+				UDR = 'b';
+				_delay_ms(10);
+				break;
+			case 3:
+				UDR = (y & 0xFF);
+				_delay_ms(10);
+				break;
+			case 4:
+				UDR = '#';
+				_delay_ms(10);
+				t = -2;
+				break;
+			}
+			t++;
+			OCR1B = x;
+			OCR0 = y;
 		}
-		t++;
-		OCR1B = x;
-		OCR0 = y;
+		else
+		{
+			i++;
+		}
+
 	}
 
 }
@@ -120,6 +130,36 @@ ISR(ADC_vect)
 		x = tx/4;
 		y = ty/4;
 		done = 0;
+		switch(x)
+		{
+		case 35:
+			x = 34;
+			break;
+		case 36:
+			x = 37;
+			break;
+		case 97:
+			x = 96;
+			break;
+		case 98:
+			x = 99;
+			break;
+		}
+		switch(y)
+		{
+		case 35:
+			y = 34;
+			break;
+		case 36:
+			y = 37;
+			break;
+		case 97:
+			y = 96;
+			break;
+		case 98:
+			y = 99;
+			break;
+		}
 	}
 	ADCSRA |= 1<<ADSC;
 
