@@ -15,7 +15,7 @@
  * OCR2 = rightr;
  */
 
-int x = 127, y = 127,done=0,tx = 0,ty = 0;
+int x = 127, y = 127,done=0,tx = 0,ty = 0,dojob = 0;
 void main(void)
 {
 	sei();
@@ -53,61 +53,44 @@ void main(void)
 
 	while(1)
 	{
-		/*UDR = '$';
-		_delay_ms(100);
-		UDR = 'a';
-		_delay_ms(100);
-		UDR = 127&0xFF;
-		_delay_ms(100);
-		UDR = 'b';
-		_delay_ms(100);
-		UDR = 0&0xFF;
-		_delay_ms(100);
-		UDR = '#';
-		_delay_ms(100);*/
-		if(i>5000)
+		if(i>5000 && dojob==1)
 		{
-			while (! (UCSRA & (1 << UDRE)) );
-			PORTB |= 1<<PINB2;
+			ADCSRA &= ~(1<<ADIE);
 			switch(t)
 			{
 			case -1:
 				UDR = '$';
-				_delay_ms(10);
 				break;
 			case 0:
 				UDR = 'a';
-				_delay_ms(10);
 				break;
 			case 1:
 				UDR = (x & 0xFF);
-				_delay_ms(10);
 				break;
 			case 2:
 				UDR = 'b';
-				_delay_ms(10);
 				break;
 			case 3:
 				UDR = (y & 0xFF);
-				_delay_ms(10);
 				break;
 			case 4:
 				UDR = '#';
-				_delay_ms(10);
+				ADCSRA |= 1<<ADSC | 1<<ADIE;
+				dojob = 0;
 				t = -2;
 				break;
 			}
 			t++;
 			OCR1B = x;
 			OCR0 = y;
+			while (! (UCSRA & (1 << TXC)) );
+			UCSRA |= 1<<TXC;
 		}
 		else
 		{
 			i++;
 		}
-
 	}
-
 }
 ISR(ADC_vect)
 {
@@ -122,13 +105,14 @@ ISR(ADC_vect)
 	case 0x41:
 		ty = t;
 		ADMUX = 0x40;
-		done = 1;
+		done++;
 		break;
 	}
-	if(done==1)
+	if(done==10)
 	{
 		x = tx/4;
 		y = ty/4;
+		dojob = 1;
 		done = 0;
 		switch(x)
 		{
@@ -161,6 +145,6 @@ ISR(ADC_vect)
 			break;
 		}
 	}
-	ADCSRA |= 1<<ADSC;
-
+	else
+		ADCSRA |= 1<<ADSC;
 }
