@@ -1,2 +1,2 @@
-# Arduino-Projects
-#Holds my arduino projects
+# Atmega Projects
+
